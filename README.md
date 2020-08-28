@@ -1,3 +1,5 @@
+**NOTE: This is an example only and should not be used in any production environment.**
+
 # Auth0 + Onfido Sample Rule App
 
 This is an EXAMPLE app to show how organization can leverage Auth0's Rule engine and Onfido's Identity Verification (IdV) service to provide strongly validated identities to your application.
@@ -12,7 +14,7 @@ Read more about Onfido's Identity Verification [here](https://onfido.com/).
 This repo provides a sample Auth0 rule (`/rules-sample`) to redirect a user during authentication to an application that is leveraging Onfido's Input Capture SDK ([https://github.com/onfido/onfido-sdk-ui](https://github.com/onfido/onfido-sdk-ui)) and APIs ([https://documentation.onfido.com/](https://documentation.onfido.com/)) to process a IdV check.
 
 Additionally, this repo offers an example implementation of the application leveraging Onfido's Input Capture SDK  and APIs.
-**NOTE: This is an example only and should not be used in any production environment.**
+
 
 ## Building the Example
 First set the environment variables (sample found in `env/.sample.env`):
