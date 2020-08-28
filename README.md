@@ -9,7 +9,7 @@ Read more about Onfido's Identity Verification [here](https://onfido.com/).
 
 # What this repo provides
 
-This repo provides a sample Auth0 rule (`src/rules-sample`) to redirect a user during authentication to an application that is leveraging Onfido's Input Capture SDK ([https://github.com/onfido/onfido-sdk-ui](https://github.com/onfido/onfido-sdk-ui)) and APIs ([https://documentation.onfido.com/](https://documentation.onfido.com/)) to process a IdV check.
+This repo provides a sample Auth0 rule (`/rules-sample`) to redirect a user during authentication to an application that is leveraging Onfido's Input Capture SDK ([https://github.com/onfido/onfido-sdk-ui](https://github.com/onfido/onfido-sdk-ui)) and APIs ([https://documentation.onfido.com/](https://documentation.onfido.com/)) to process a IdV check.
 
 Additionally, this repo offers an example implementation of the application leveraging Onfido's Input Capture SDK  and APIs.
 **NOTE: This is an example only and should not be used in any production environment.**
@@ -32,7 +32,7 @@ Then simply `git clone`, `npm install`, and `npm run build`
     cd auth0-onfido-rule
     npm install
     npm run build
-The rule provided can be placed into your Auth0 tenant. Simply copy the contents and past into a new rule. (see: [https://auth0.com/docs/rules/create-rules](https://auth0.com/docs/rules/create-rules))
+The rule provided can be placed into your Auth0 tenant. Simply copy the contents (`rules-sample/onfido-idv-rule.js`) and paste into a new rule. (see: [https://auth0.com/docs/rules/create-rules](https://auth0.com/docs/rules/create-rules))
 
 ## Example App - The Details
 

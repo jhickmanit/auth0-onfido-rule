@@ -14,6 +14,10 @@
   "keywords": [],
   "author": "Jeff Hickman",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jhickmanit/auth0-onfido-rule"
+  },
   "dependencies": {
     "@auth0/rule-utilities": "^0.1.0",
     "@onfido/api": "^1.5.0",
