@@ -53,6 +53,13 @@ function redirectOnfidoRule(user, context, callback) {
     user.app_metadata.idv.check_status = payload.checkStatus
     user.app_metadata.idv.check_result = payload.checkResult
     user.app_metadata.idv.applicant = payload.applicant
+    auth0.users.updateAppMetadata(user.user_id, user.app_metadata)
+    .then(function(){
+      return callback(null, user, context)
+    })
+    .catch(function(err){
+      return callback(err);
+    })
     return callback(null, user, context)
   }
 
