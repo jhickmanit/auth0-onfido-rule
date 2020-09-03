@@ -14,9 +14,9 @@
  */
 function redirectOnfidoRule(user, context, callback) {
   // using auth0 rule-utilities to make sure our rule is efficient in the pipeline
-  const { Auth0RedirectRuleUtilities } = require('@auth0/rule-utilities@0.1.0')
+  const { Auth0RedirectRuleUtilities } = require('@auth0/rule-utilities@0.1.0');
   // requiring Onfido's node SDK for making the calls easier to Onfido's service. 
-  const { Onfido, Region } = require('@onfido/api@1.5.1')
+  const { Onfido, Region } = require('@onfido/api@1.5.1');
 
   const ruleUtils = new Auth0RedirectRuleUtilities(user, context, configuration)
 
@@ -24,14 +24,8 @@ function redirectOnfidoRule(user, context, callback) {
   const onfidoClient = new Onfido({
     apiToken: configuration.ONFIDO_API_TOKEN,
     region:
-      configuration.ONFIDO_REGION === 'EU'
-        ? Region.EU
-        : configuration.ONFIDO_REGION === 'US'
-        ? Region.US
-        : configuration.ONFIDO_REGION === 'CA'
-        ? Region.CA
-        : Region.EU,
-  })
+      configuration.ONFIDO_REGION === 'EU' ? Region.EU : configuration.ONFIDO_REGION === 'US' ? Region.US : configuration.ONFIDO_REGION === 'CA' ? Region.CA : Region.EU,
+  });
 
   user.app_metadata = user.app_metadata || {};
 
@@ -39,36 +33,36 @@ function redirectOnfidoRule(user, context, callback) {
     // User is back from the Onfido experience and has a session token to validate and assign to user meta
 
     // Validating session token and extracting payload for check results
-    let payload
+    let payload;
     try {
-      payload = ruleUtils.validateSessionToken()
+      payload = ruleUtils.validateSessionToken();
     } catch (error) {
-      return callback(error)
+      return callback(error);
     }
 
     // assigning check status and result to the app_metadata so the downstream application can decided what to do next
     // note, in the example integration, the Onfido app returns after 30 seconds even if the check is still in progress 
     // If this claim status is still in_progress it is recommended the downstream application recheck for completion or implement the Onfido Webhook: https://documentation.onfido.com/#webhooks
     // Additionally, you can place these items into the idToken claim with custom claims as needed
-    user.app_metadata.idv.check_status = payload.checkStatus
-    user.app_metadata.idv.check_result = payload.checkResult
-    user.app_metadata.idv.applicant = payload.applicant
+    user.app_metadata.idv.check_status = payload.checkStatus;
+    user.app_metadata.idv.check_result = payload.checkResult;
+    user.app_metadata.idv.applicant = payload.applicant;
     auth0.users.updateAppMetadata(user.user_id, user.app_metadata)
     .then(function(){
-      return callback(null, user, context)
+      return callback(null, user, context);
     })
     .catch(function(err){
       return callback(err);
     })
-    return callback(null, user, context)
+    return callback(null, user, context);
   }
 
   if (ruleUtils.canRedirect && (!user.app_metadata || user.app_metadata.checkStatus === '')) {
     // if the user has not already been redirected and checkStatus is empty, we will create the applicant and redirect to the Onfido implementation.
-    let email
+    let email;
     if (user.email && user.email_verified && validateEmail(user.email)) {
       // simple email validation. This can be replaced with assigning the email variable to a fake value (such as anon@example.com).
-      email = user.email
+      email = user.email;
     }
     const applicant = onfidoClient.applicant.create({
       // these values do not need to match what is on the document for IDV, but if Data Comparison on Onfido's side is tuned on, these values will flag
@@ -78,26 +72,26 @@ function redirectOnfidoRule(user, context, callback) {
       email,
     }).then((response) => {
       // returning the applicant id to send to the Onfido implementation
-      return response.id
+      return response.id;
     }).catch((error) => {
-      return callback(error)
+      return callback(error);
     })
     try {
       // create the session token with the applicant id as a custom claim
-      const sessionToken = ruleUtils.createSessionToken({ applicant })
+      const sessionToken = ruleUtils.createSessionToken({ applicant });
       // redirect to Onfido implementation with sessionToken
-      ruleUtils.doRedirect(configuration.ONFIDO_ID_VERIFICATION_URL, sessionToken)
-      return callback(null, user, context)
+      ruleUtils.doRedirect(configuration.ONFIDO_ID_VERIFICATION_URL, sessionToken);
+      return callback(null, user, context);
     } catch (error) {
-      return callback(error)
+      return callback(error);
     }
   }
 
-  return callback(null, user, context)
+  return callback(null, user, context);
 
   // simple regex to validate it is a properly formatted email address.
   function validateEmail(email) {
-    const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-    return re.test(String(email).toLowerCase())
+    const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+    return re.test(String(email).toLowerCase());
   }
 }
