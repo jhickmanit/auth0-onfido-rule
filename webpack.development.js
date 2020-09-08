@@ -16,7 +16,7 @@ module.exports = merge(common, {
       __DEV__: true,
     }),
     new CleanWebpackPlugin(),
-    new DotEnv({ path: path.join(__dirname, '/env/.development.env') })
+    new DotEnv({ path: path.join(__dirname, '/env/.env.development') })
   ],
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),

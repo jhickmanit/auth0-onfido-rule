@@ -9,6 +9,6 @@ module.exports = merge(common, {
   mode: 'production',
   plugins: [
     new CleanWebpackPlugin(),
-    new DotEnv({ path: path.join(__dirname, '/env/.production.env') }),
+    new DotEnv({ path: path.join(__dirname, '/env/.env.production') }),
   ],
 })
