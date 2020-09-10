@@ -22,8 +22,9 @@ router.get('/', (req, res) => {
   const sessionToken = String(query.session_token)
   const auth0State = String(query.state)
   req.session.auth0State = auth0State
+  const validIssuer = `${configuration.issuerBaseURL}/`
   const payload = jwt.verify(sessionToken, configuration.appSecret, {
-    issuer: configuration.issuerBaseURL,
+    issuer: validIssuer,
   })
 
   //eslint-disable-next-line
@@ -68,10 +69,8 @@ router.post('/', (req, res) => {
           applicant: response.applicantId,
           ...auth0Payload,
         }
-        const signed = jwt.sign(sessionToken, configuration.appSecret, {
-          expiresIn: '3d',
-        })
-        const continueUrl = `${configuration.issuerBaseURL}/continue?state=${auth0State}&sessionToken=${signed}`
+        const signed = jwt.sign(sessionToken, configuration.appSecret)
+        const continueUrl = `${configuration.issuerBaseURL}/continue?state=${auth0State}&session_token=${signed}`
         res.redirect(continueUrl)
       })
       .catch((error) => {
@@ -86,10 +85,8 @@ router.post('/', (req, res) => {
           checkResult: response.result,
           ...auth0Payload,
         }
-        const signed = jwt.sign(sessionToken, configuration.appSecret, {
-          expiresIn: '3d',
-        })
-        const continueUrl = `${configuration.issuerBaseURL}/continue?state=${auth0State}&sessionToken=${signed}`
+        const signed = jwt.sign(sessionToken, configuration.appSecret)
+        const continueUrl = `${configuration.issuerBaseURL}/continue?state=${auth0State}&session_token=${signed}`
         res.redirect(continueUrl)
       })
       .catch((error) => {

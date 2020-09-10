@@ -8,17 +8,17 @@ block content
   body
     .demo-center-text
       #onfido-mount
-      div(class="progress" style="display: none")
+      div#pbar(class="progress" style="display: none")
         div(class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 75%")
         p Verifying your identity, please wait... this should only take a few moments.
-      form#submitForm(action='/redirect-rule' method='POST')
+      form#submitForm(action='/redirect-rule' method='POST' name="submitForm" class="submitForm")
         input(type="hidden", name="onfidoComplete", value=false)
       script.
         $(document).ready(function () {
           onfido = Onfido.init({
             useModal: false,
             token: '#{sdkToken}',
-            containerId: 'onfido-mount'
+            containerId: 'onfido-mount',
             steps: [{
               type: 'welcome',
               options: {
@@ -44,47 +44,60 @@ block content
             {
               type: 'complete',
               options: {
-                message: 'Identity Verification Steps Complete!'
-                submessage: 'Your identity is being verified! Click the button below to continue.'
+                message: 'Identity Verification Steps Complete!',
+                submessage: 'Your identity is being verified!',
               },
             },],
             onComplete: function (data) {
               var settings = {
-                'crossDomain': true,
-                'url': location.protocol + "//" + location.hostname + ":"+location.port+ "/redirect-rule/check"
-                'type': 'GET',
-                'headers': {
+                crossDomain: true,
+                url: location.protocol + "//" + location.hostname + ":"+location.port+ "/redirect-rule/check",
+                type: 'GET',
+                headers: {
                   'Cache-Control': 'no-cache',
-                }
+                },
+                xhrFields: {
+                  "withCredentials": true
+                },
               }
               $.ajax(settings).done(function (response) {
                 if (response.status === 'in_progress') {
                   $('#onfido-mount').hide()
+                  $('#pbar').show()
                   const interval = setInterval(checkStatus, 5000)
                   var timesRun = 0
                   function checkStatus() {
                     if (timesRun === 6) {
                       clearInterval(interval)
-                      $('form#submitForm').submit(function () {
+                      document.getElementById('submitForm').submit(function () {
+                          console.log('submit 1')
                           var input = $(this).find('input[name=onfidoComplete]')
                           $input.val(false)
+                          return false
                       })
                     }
                     var settingsStatus = {
-                      "crossDomain": true,
-                      "url": location.protocol + "//" + location.hostname + ":"+location.port+ "/redirect-rule/status",
-                      "type": "GET",
-                      "headers": {
+                      crossDomain: true,
+                      url: location.protocol + "//" + location.hostname + ":"+location.port+ "/redirect-rule/status",
+                      type: "GET",
+                      headers: {
                         "Cache-Control": "no-cache",
-                      }
+                      },
+                      xhrFields: {
+                        "withCredentials": true
+                      },
                     }
                     $.ajax(settingsStatus).done(function (response) {
                       if (response.status === 'complete') {
                         clearInterval(interval)
-                        $('form#submitForm').submit(function () {
+                        document.getElementById('submitForm').submit(function () {
+                          console.log('submit 2')
                           var input = $(this).find('input[name=onfidoComplete]')
                           $input.val(true)
+                          return false
                         })
+                      } else {
+                        timesRun++
                       }
                     })
                   }

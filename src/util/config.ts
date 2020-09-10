@@ -10,8 +10,8 @@ class Configuration {
 
   constructor() {
     this.appSecret = String(process.env.APP_SECRET || 't#GS7Gq97@nu*?Cb')
-    this.issuerBaseURL = String(
-      process.env.ISSUER_BASE_URL || 'https://unknown',
+    this.issuerBaseURL = this.stringTrailingSlash(
+      String(process.env.ISSUER_BASE_URL || 'https://unknown'),
     )
     this.appURL = this.stringTrailingSlash(
       String(process.env.APP_URL || 'http:/localhost/'),
